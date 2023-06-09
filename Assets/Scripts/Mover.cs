@@ -7,10 +7,13 @@ public class Mover : MonoBehaviour
 {
     private NavMeshAgent _navMeshAgent;
     private Camera _camera;
+    private static readonly int ForwardSpeed = Animator.StringToHash("forwardSpeed");
+    private Animator _animator;
 
     // Start is called before the first frame update
     void Start()
     {
+        _animator = GetComponent<Animator>();
         _camera = Camera.main;
         _navMeshAgent = GetComponent<NavMeshAgent>();
     }
@@ -22,6 +25,7 @@ public class Mover : MonoBehaviour
         {
             MoveToCursor();
         }
+        UpdateAnimator();
     }
 
     private void MoveToCursor()
@@ -35,5 +39,13 @@ public class Mover : MonoBehaviour
         {
             _navMeshAgent.destination = hit.point;
         }
+    }
+
+    private void UpdateAnimator()
+    {
+        Vector3 velocity = _navMeshAgent.velocity;
+        Vector3 localVelocity = transform.InverseTransformDirection(velocity);
+        float speed = localVelocity.z;
+        _animator.SetFloat(ForwardSpeed, speed);
     }
 }
