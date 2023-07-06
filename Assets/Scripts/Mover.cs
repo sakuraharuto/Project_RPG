@@ -6,7 +6,6 @@ using UnityEngine.AI;
 public class Mover : MonoBehaviour
 {
     private NavMeshAgent _navMeshAgent;
-    private Camera _camera;
     private static readonly int ForwardSpeed = Animator.StringToHash("forwardSpeed");
     private Animator _animator;
 
@@ -14,31 +13,20 @@ public class Mover : MonoBehaviour
     void Start()
     {
         _animator = GetComponent<Animator>();
-        _camera = Camera.main;
         _navMeshAgent = GetComponent<NavMeshAgent>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButton(0))
-        {
-            MoveToCursor();
-        }
         UpdateAnimator();
     }
 
-    private void MoveToCursor()
+    
+
+    public void MoveTo(Vector3 destination)
     {
-        Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-
-        bool hasHit = Physics.Raycast(ray, out hit);
-
-        if (hasHit)
-        {
-            _navMeshAgent.destination = hit.point;
-        }
+        _navMeshAgent.destination = destination;
     }
 
     private void UpdateAnimator()
