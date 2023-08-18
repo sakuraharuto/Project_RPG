@@ -24,11 +24,12 @@ namespace Control
         // Update is called once per frame
         void Update()
         {
-            InteractWithCombat();
-            InteractWithMovement();
+            if (InteractWithCombat()) return;
+            if (InteractWithMovement()) return;
+            //print("I have nothing to do.");
         }
 
-        private void InteractWithCombat()
+        private bool InteractWithCombat()
         {
             RaycastHit[] hits = Physics.RaycastAll(GetMouseRay());
             foreach (RaycastHit hit in hits)
@@ -40,18 +41,14 @@ namespace Control
                 {
                     _fighter.Attack(target);
                 }
+
+                return true;
             }
+
+            return false;
         }
 
-        private void InteractWithMovement()
-        {
-            if (Input.GetMouseButton(0))
-            {
-                MoveToCursor();
-            }
-        }
-
-        private void MoveToCursor()
+        private bool InteractWithMovement()
         {
             Ray ray = GetMouseRay();
             RaycastHit hit;
@@ -59,9 +56,15 @@ namespace Control
             bool hasHit = Physics.Raycast(ray, out hit);
 
             if (hasHit)
-            {   
-                _mover.MoveTo(hit.point);
+            {
+                if (Input.GetMouseButton(0))
+                {
+                    _mover.MoveTo(hit.point);
+                }
+                return true;
             }
+
+            return false;
         }
 
         private Ray GetMouseRay()
