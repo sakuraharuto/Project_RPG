@@ -1,33 +1,33 @@
 using System.Collections;
 using System.Collections.Generic;
-using Combat;
+using Core;
 using UnityEngine;
 using UnityEngine.AI;
 
 namespace Movement
 {
-    public class Mover : MonoBehaviour
+    public class Mover : MonoBehaviour, IAction
     {
         private NavMeshAgent _navMeshAgent;
         private static readonly int ForwardSpeed = Animator.StringToHash("forwardSpeed");
         private Animator _animator;
 
         // Start is called before the first frame update
-        void Start()
+        private void Start()
         {
             _animator = GetComponent<Animator>();
             _navMeshAgent = GetComponent<NavMeshAgent>();
         }
 
         // Update is called once per frame
-        void Update()
+        private void Update()
         {
             UpdateAnimator();
         }
 
         public void StartMoveAction(Vector3 destination)
         {   
-            GetComponent<Fighter>().Cancel();
+            GetComponent<ActionScheduler>().StartAction(this);
             MoveTo(destination);
         }
         
@@ -37,7 +37,7 @@ namespace Movement
             _navMeshAgent.isStopped = false;
         }
 
-        public void Stop()
+        public void Cancel()
         {
             _navMeshAgent.isStopped = true;
         }
@@ -49,6 +49,7 @@ namespace Movement
             float speed = localVelocity.z;
             _animator.SetFloat(ForwardSpeed, speed);
         }
+        
     }
 }
 

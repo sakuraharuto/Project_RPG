@@ -1,12 +1,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Core;
 using UnityEngine;
 using Movement;
 
 namespace Combat
 {
-    public class Fighter : MonoBehaviour
+    public class Fighter : MonoBehaviour, IAction
     {
         [SerializeField] private float weaponRange = 2f;
         private Transform _target;
@@ -21,7 +22,7 @@ namespace Combat
             }
             else
             {
-                GetComponent<Mover>().Stop();
+                GetComponent<Mover>().Cancel();
             }
         }
 
@@ -31,7 +32,8 @@ namespace Combat
         }
 
         public void Attack(CombatTarget combatTarget)
-        {
+        {   
+            GetComponent<ActionScheduler>().StartAction(this);
             _target = combatTarget.transform;
             print("Come get some");
         }
