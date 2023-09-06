@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Net;
 using Core;
 using UnityEngine;
 using Movement;
@@ -11,6 +12,7 @@ namespace Combat
     {
         [SerializeField] private float weaponRange = 2f;
         [SerializeField] private float timeBetweenAttack = 1f;
+        [SerializeField] private float weaponDamage = 5f;
         private Transform _target;
         private static readonly int Attack1 = Animator.StringToHash("attack");
         private float timeSinceLastAttack = 0;
@@ -35,7 +37,8 @@ namespace Combat
         private void AttackBehaviour()
         {
             if (timeSinceLastAttack > timeBetweenAttack)
-            {
+            {   
+                // This will trigger the Hit() event
                 GetComponent<Animator>().SetTrigger(Attack1);
                 timeSinceLastAttack = 0;
             }
@@ -61,7 +64,8 @@ namespace Combat
         // Animation Event
         void Hit()
         {
-            
+            Health healthComp = _target.GetComponent<Health>();
+            healthComp.TakeDamage(weaponDamage);
         }
     }
 }
