@@ -161,6 +161,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   weaponRange: 2
+  timeBetweenAttack: 1
 --- !u!114 &6640645329004380713
 MonoBehaviour:
   m_ObjectHideFlags: 0
