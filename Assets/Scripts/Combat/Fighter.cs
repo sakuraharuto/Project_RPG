@@ -39,9 +39,10 @@ namespace Combat
         }
 
         private void AttackBehaviour()
-        {
+        {   
+            transform.LookAt(_target.transform);
             if (_timeSinceLastAttack > timeBetweenAttack)
-            {   
+            {
                 // This will trigger the Hit() event
                 GetComponent<Animator>().SetTrigger(Attack1);
                 _timeSinceLastAttack = 0;
@@ -58,6 +59,16 @@ namespace Combat
             GetComponent<ActionScheduler>().StartAction(this);
             _target = combatTarget.GetComponent<Health>();
             print("Come get some");
+        }
+
+        public bool CanAttack(CombatTarget combatTarget)
+        {
+            if (combatTarget == null)
+            {
+                return false;
+            }
+            Health targetToTest = combatTarget.GetComponent<Health>();
+            return targetToTest != null && !targetToTest.GetIsDead();
         }
 
         public void Cancel()
