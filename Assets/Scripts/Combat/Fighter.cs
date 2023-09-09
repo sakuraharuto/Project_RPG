@@ -5,6 +5,7 @@ using System.Net;
 using Core;
 using UnityEngine;
 using Movement;
+using UnityEngine.Rendering;
 
 namespace Combat
 {
@@ -44,7 +45,7 @@ namespace Combat
             if (_timeSinceLastAttack > timeBetweenAttack)
             {
                 // This will trigger the Hit() event
-                GetComponent<Animator>().SetTrigger(Attack1);
+                TriggerAttack();
                 _timeSinceLastAttack = 0;
             }
         }
@@ -72,18 +73,27 @@ namespace Combat
         }
 
         public void Cancel()
-        {   
-            GetComponent<Animator>().SetTrigger(StopAttack);
+        {
+            TriggerStopAttack();
             _target = null;
         }
         
+        private void TriggerAttack()
+        {
+            GetComponent<Animator>().ResetTrigger(StopAttack);
+            GetComponent<Animator>().SetTrigger(Attack1);
+        }
+        
+        private void TriggerStopAttack()
+        {
+            GetComponent<Animator>().ResetTrigger(Attack1);
+            GetComponent<Animator>().SetTrigger(StopAttack);
+        }
+
         // Animation Event
         void Hit()
         {
-            if (_target == null)
-            {
-                return;
-            }
+            if (_target == null) return;
             
             _target.TakeDamage(weaponDamage);
         }
