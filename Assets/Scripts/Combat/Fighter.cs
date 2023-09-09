@@ -13,19 +13,23 @@ namespace Combat
         [SerializeField] private float weaponRange = 2f;
         [SerializeField] private float timeBetweenAttack = 1f;
         [SerializeField] private float weaponDamage = 5f;
-        private Transform _target;
+        
+        private Health _target;
         private static readonly int Attack1 = Animator.StringToHash("attack");
-        private float timeSinceLastAttack = 0;
+        private float _timeSinceLastAttack = 0;
+        private static readonly int StopAttack = Animator.StringToHash("stopAttack");
 
         private void Update()
         {
-            timeSinceLastAttack += Time.deltaTime;
+            _timeSinceLastAttack += Time.deltaTime;
             
             if (_target == null) return;
+
+            if (_target.GetIsDead()) return;
             
             if (!GetIsInRange())
             {
-                GetComponent<Mover>().MoveTo(_target.position);
+                GetComponent<Mover>().MoveTo(_target.transform.position);
             }
             else
             {
@@ -36,11 +40,11 @@ namespace Combat
 
         private void AttackBehaviour()
         {
-            if (timeSinceLastAttack > timeBetweenAttack)
+            if (_timeSinceLastAttack > timeBetweenAttack)
             {   
                 // This will trigger the Hit() event
                 GetComponent<Animator>().SetTrigger(Attack1);
-                timeSinceLastAttack = 0;
+                _timeSinceLastAttack = 0;
             }
         }
 
@@ -52,12 +56,13 @@ namespace Combat
         public void Attack(CombatTarget combatTarget)
         {   
             GetComponent<ActionScheduler>().StartAction(this);
-            _target = combatTarget.transform;
+            _target = combatTarget.GetComponent<Health>();
             print("Come get some");
         }
 
         public void Cancel()
-        {
+        {   
+            GetComponent<Animator>().SetTrigger(StopAttack);
             _target = null;
         }
         
@@ -68,8 +73,8 @@ namespace Combat
             {
                 return;
             }
-            Health healthComp = _target.GetComponent<Health>();
-            healthComp.TakeDamage(weaponDamage);
+            
+            _target.TakeDamage(weaponDamage);
         }
     }
 }
