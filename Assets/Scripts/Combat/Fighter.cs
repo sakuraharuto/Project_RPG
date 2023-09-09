@@ -64,6 +64,10 @@ namespace Combat
         // Animation Event
         void Hit()
         {
+            if (_target == null)
+            {
+                return;
+            }
             Health healthComp = _target.GetComponent<Health>();
             healthComp.TakeDamage(weaponDamage);
         }
