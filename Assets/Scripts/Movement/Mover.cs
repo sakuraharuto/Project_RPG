@@ -11,6 +11,7 @@ namespace Movement
         private NavMeshAgent _navMeshAgent;
         private static readonly int ForwardSpeed = Animator.StringToHash("forwardSpeed");
         private Animator _animator;
+        private Health _health;
 
         // Start is called before the first frame update
         private void Start()
@@ -22,6 +23,7 @@ namespace Movement
         // Update is called once per frame
         private void Update()
         {
+            _navMeshAgent.enabled = !_health.GetIsDead();
             UpdateAnimator();
         }
 

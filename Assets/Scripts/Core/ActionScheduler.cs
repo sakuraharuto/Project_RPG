@@ -14,7 +14,11 @@ namespace Core
             }
             _currentAction?.Cancel();
             _currentAction = action;
-            
+        }
+
+        public void CancelCurrentAction()
+        {
+            StartAction(null);
         }
     }
 }

@@ -1,10 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Serialization;
 
-namespace Combat
+namespace Core
 {
     public class Health : MonoBehaviour
     {
@@ -29,6 +25,7 @@ namespace Combat
             
             isDead = true;
             GetComponent<Animator>().SetTrigger(Die1);
+            GetComponent<ActionScheduler>().CancelCurrentAction();
         }
 
         public bool GetIsDead()

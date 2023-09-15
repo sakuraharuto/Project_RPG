@@ -17,7 +17,7 @@ namespace Combat
         
         private Health _target;
         private static readonly int Attack1 = Animator.StringToHash("attack");
-        private float _timeSinceLastAttack = 0;
+        private float _timeSinceLastAttack = Mathf.Infinity;
         private static readonly int StopAttack = Animator.StringToHash("stopAttack");
 
         private void Update()
@@ -55,14 +55,14 @@ namespace Combat
             return Vector3.Distance(transform.position, _target.transform.position) < weaponRange;
         }
 
-        public void Attack(CombatTarget combatTarget)
+        public void Attack(GameObject combatTarget)
         {   
             GetComponent<ActionScheduler>().StartAction(this);
             _target = combatTarget.GetComponent<Health>();
             print("Come get some");
         }
 
-        public bool CanAttack(CombatTarget combatTarget)
+        public bool CanAttack(GameObject combatTarget)
         {
             if (combatTarget == null)
             {
