@@ -18,6 +18,7 @@ namespace Movement
         {
             _animator = GetComponent<Animator>();
             _navMeshAgent = GetComponent<NavMeshAgent>();
+            _health = GetComponent<Health>();
         }
 
         // Update is called once per frame
