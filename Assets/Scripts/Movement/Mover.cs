@@ -52,7 +52,11 @@ namespace Movement
             float speed = localVelocity.z;
             _animator.SetFloat(ForwardSpeed, speed);
         }
-        
+
+        public bool IsMoving()
+        {
+            return _navMeshAgent.velocity.magnitude > 0.1f;
+        }
     }
 }
 

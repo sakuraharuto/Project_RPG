@@ -9,6 +9,7 @@ namespace Control
     public class AIController : MonoBehaviour
     {
         [SerializeField] private float chaseDistance = 5f;
+        [SerializeField] private float suspicionTime = 3f;
 
         private Fighter _fighter;
         private GameObject _player;
@@ -16,6 +17,7 @@ namespace Control
         private Mover _mover;
 
         private Vector3 _guardPosition;
+        private float _timeSinceLastSawPlayer = Mathf.Infinity;
         
         private void Start()
         {
@@ -28,17 +30,45 @@ namespace Control
         }
 
         private void Update()
-        {
+        {   
+            // Don't do anything cause you were dead
             if (_health.GetIsDead()) return;
             
             if (InAttackRangeOfPlayer() && _fighter.CanAttack(_player))
             {
-                _fighter.Attack(_player);
+                // Attack state
+                AttackBehaviour();
+            }
+            else if (_timeSinceLastSawPlayer < suspicionTime)
+            {
+                // suspicion state
+                SuspicionBehaviour();
             }
             else
             {
-                _mover.StartMoveAction(_guardPosition);
+                // Back to guard post
+                GuardBehaviour();
             }
+        }
+
+        private void SuspicionBehaviour()
+        {
+            GetComponent<ActionScheduler>().CancelCurrentAction();
+            if (!_mover.IsMoving())
+            {
+                _timeSinceLastSawPlayer += Time.deltaTime;
+            }
+        }
+
+        private void GuardBehaviour()
+        {
+            _mover.StartMoveAction(_guardPosition);
+        }
+
+        private void AttackBehaviour()
+        {
+            _timeSinceLastSawPlayer = 0;
+            _fighter.Attack(_player);
         }
 
         private bool InAttackRangeOfPlayer()
