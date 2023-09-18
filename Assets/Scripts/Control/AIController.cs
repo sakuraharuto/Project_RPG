@@ -1,6 +1,7 @@
 using System;
 using Combat;
 using Core;
+using Movement;
 using UnityEngine;
 
 namespace Control
@@ -12,12 +13,18 @@ namespace Control
         private Fighter _fighter;
         private GameObject _player;
         private Health _health;
+        private Mover _mover;
+
+        private Vector3 _guardPosition;
         
         private void Start()
         {
             _fighter = GetComponent<Fighter>();
             _player = GameObject.FindWithTag("Player");
             _health = GetComponent<Health>();
+            _mover = GetComponent<Mover>();
+
+            _guardPosition = transform.position;
         }
 
         private void Update()
@@ -30,7 +37,7 @@ namespace Control
             }
             else
             {
-                _fighter.Cancel();
+                _mover.StartMoveAction(_guardPosition);
             }
         }
 
