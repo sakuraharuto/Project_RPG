@@ -1296,6 +1296,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1003863459}
     - target: {fileID: 1885672908, guid: ab23c3100cfa54fa08536dc65349926d, type: 3}
+      propertyPath: wayPointDwellTime
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1885672908, guid: ab23c3100cfa54fa08536dc65349926d, type: 3}
       propertyPath: wayPointTolerance
       value: 1
       objectReference: {fileID: 0}

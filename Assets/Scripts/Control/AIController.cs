@@ -13,6 +13,7 @@ namespace Control
         [SerializeField] private float suspicionTime = 3f;
         [SerializeField] private PatrolPath patrolPath;
         [SerializeField] private float wayPointTolerance = 1f;
+        [SerializeField] private float wayPointDwellTime = 1f;
 
         private Fighter _fighter;
         private GameObject _player;
@@ -21,6 +22,7 @@ namespace Control
 
         private Vector3 _guardPosition;
         private float _timeSinceLastSawPlayer = Mathf.Infinity;
+        private float _timeSinceArrivedAtWaypoint = Mathf.Infinity;
         private int _currentWaypointIndex = 0;
         
         private void Start()
@@ -53,15 +55,24 @@ namespace Control
                 // Back to guard post
                 PatrolBehaviour();
             }
+            UpdateTimers();
+        }
+
+        private void UpdateTimers()
+        {
+            _timeSinceLastSawPlayer += Time.deltaTime;
+            _timeSinceArrivedAtWaypoint += Time.deltaTime;
         }
 
         private void SuspicionBehaviour()
         {
             GetComponent<ActionScheduler>().CancelCurrentAction();
+            /*
             if (!_mover.IsMoving())
             {
                 _timeSinceLastSawPlayer += Time.deltaTime;
             }
+            */
         }
 
         private void PatrolBehaviour()
@@ -72,11 +83,16 @@ namespace Control
             {
                 if (AtWaypoint())
                 {
+                    _timeSinceArrivedAtWaypoint = 0;
                     CycleWaypoint();
                 }
                 nextPosition = GetCurrentWaypoint();
             }
-            _mover.StartMoveAction(nextPosition);
+
+            if (_timeSinceArrivedAtWaypoint > wayPointDwellTime)
+            {
+                _mover.StartMoveAction(nextPosition);
+            }
         }
 
         private Vector3 GetCurrentWaypoint()
