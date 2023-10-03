@@ -3,6 +3,7 @@ using Combat;
 using Core;
 using Movement;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Control
 {
@@ -10,6 +11,8 @@ namespace Control
     {
         [SerializeField] private float chaseDistance = 5f;
         [SerializeField] private float suspicionTime = 3f;
+        [SerializeField] private PatrolPath patrolPath;
+        [SerializeField] private float wayPointTolerance = 1f;
 
         private Fighter _fighter;
         private GameObject _player;
@@ -18,6 +21,7 @@ namespace Control
 
         private Vector3 _guardPosition;
         private float _timeSinceLastSawPlayer = Mathf.Infinity;
+        private int _currentWaypointIndex = 0;
         
         private void Start()
         {
@@ -47,7 +51,7 @@ namespace Control
             else
             {
                 // Back to guard post
-                GuardBehaviour();
+                PatrolBehaviour();
             }
         }
 
@@ -60,9 +64,35 @@ namespace Control
             }
         }
 
-        private void GuardBehaviour()
+        private void PatrolBehaviour()
         {
-            _mover.StartMoveAction(_guardPosition);
+            Vector3 nextPosition = _guardPosition;
+            
+            if (patrolPath != null)
+            {
+                if (AtWaypoint())
+                {
+                    CycleWaypoint();
+                }
+                nextPosition = GetCurrentWaypoint();
+            }
+            _mover.StartMoveAction(nextPosition);
+        }
+
+        private Vector3 GetCurrentWaypoint()
+        {
+            return patrolPath.GetWaypoint(_currentWaypointIndex);
+        }
+
+        private void CycleWaypoint()
+        {
+            _currentWaypointIndex = patrolPath.GetNextIndex(_currentWaypointIndex);
+        }
+
+        private bool AtWaypoint()
+        {
+            float distanceToWaypoint = Vector3.Distance(transform.position, GetCurrentWaypoint());
+            return distanceToWaypoint < wayPointTolerance;
         }
 
         private void AttackBehaviour()
